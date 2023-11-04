@@ -6,13 +6,23 @@ database:
   password: password
 
 messages:
+  playerAlreadyBlacklisted: "&cPlayer &7{player}&c is already blacklisted"
   playerNotOnline: "&cPlayer &7{player}&c is not online"
   playerNotBanned: "&cPlayer &7{player}&c is not banned"
+  playerNotBlacklisted: "&cPlayer &7{player}&c is not blacklisted"
+  playerUnBlacklist: "&aPlayer &7{player}&a it was unblacklisted"
   playerUnbanned: "&aPlayer &7{player}&a it was unbanned"
+
+  confirmedBlacklist: "&aPlayer blacklisted successfully"
   confirmedBan: "&aPlayer banned successfully"
   banDisplay:
     - "&d&lOrbital&5&lStudios"
     - ""
     - "&dYou have been &lBanned"
     - "&dExpires: &7{expiration}"
+    - "&dReason: &7{reason}"
+  blacklistDisplay:
+    - "&d&lOrbital&5&lStudios"
+    - ""
+    - "&dYou have been &lBLACKLISTED"
     - "&dReason: &7{reason}"

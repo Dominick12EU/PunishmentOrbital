@@ -42,7 +42,6 @@ public class CmdBan extends CommandBase {
             return;
         }
 
-
         String duration = args.length >= 2 ? args[1] : "permanent";
         String reason = args.length >= 3 ? String.join(" ", Arrays.copyOfRange(args, 2, args.length)) : "No Reason";
         String staffAction = "BAN";
@@ -66,7 +65,5 @@ public class CmdBan extends CommandBase {
                 .replace("{expiration}", expiration.toString())
                 .replace("{reason}", pdb.getBanReason(playerUUID))));
         ChatUtils.send(sender, config, "messages.confirmedBan");
-
-        System.out.println(Arrays.toString(args));
     }
 }

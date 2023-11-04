@@ -1,11 +1,13 @@
 package it.dominick.orbital.events;
 
+import it.dominick.orbital.storage.CsvData;
 import it.dominick.orbital.storage.PunishmentDatabase;
 import it.dominick.orbital.utils.ChatUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -16,14 +18,16 @@ public class JoinPlayerListener implements Listener {
 
     private PunishmentDatabase pdb;
     private FileConfiguration config;
+    private CsvData data;
 
-    public JoinPlayerListener(PunishmentDatabase pdb, FileConfiguration config) {
+    public JoinPlayerListener(PunishmentDatabase pdb, FileConfiguration config, CsvData data) {
         this.pdb = pdb;
         this.config = config;
+        this.data = data;
     }
 
     @EventHandler
-    public void onPlayerJoin(AsyncPlayerPreLoginEvent event) {
+    public void onPlayerPreJoin(AsyncPlayerPreLoginEvent event) {
         UUID playerUUID = event.getUniqueId();
 
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -44,6 +48,16 @@ public class JoinPlayerListener implements Listener {
             event.setKickMessage(ChatUtils.translateHexColorCodes(String.join("\n", banDisplay)
                     .replace("{expiration}", expiration.toString())
                     .replace("{reason}", pdb.getBanReason(playerUUID))));
+        }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        String playerName = event.getPlayer().getName();
+        String playerUUID = event.getPlayer().getUniqueId().toString();
+
+        if (!data.isPlayerRegistered(playerName)) {
+            data.registerPlayer(playerName, playerUUID);
         }
     }
 }

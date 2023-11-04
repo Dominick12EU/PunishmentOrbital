@@ -86,7 +86,7 @@ public class PunishmentDatabase {
                     "staff_action VARCHAR(255) NOT NULL)";
             statement.executeUpdate(query);
 
-            String alterQuery = "ALTER TABLE ban_history MODIFY COLUMN expiration DATETIME(6)";
+            String alterQuery = "ALTER TABLE history MODIFY COLUMN expiration DATETIME(6)";
             statement.executeUpdate(alterQuery);
         } catch (SQLException e) {
             System.out.println("Error creating history table: " + e.getMessage());

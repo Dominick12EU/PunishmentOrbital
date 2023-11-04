@@ -1,6 +1,9 @@
 package it.dominick.orbital;
 
 import it.dominick.orbital.commands.CmdBan;
+import it.dominick.orbital.commands.CmdUnBan;
+import it.dominick.orbital.events.JoinPlayerListener;
+import it.dominick.orbital.storage.CsvData;
 import it.dominick.orbital.storage.PunishmentDatabase;
 import me.mattstudios.mf.base.CommandManager;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -30,8 +33,12 @@ public final class PunishmentOrbital extends JavaPlugin {
             pdb.createMuteTable();
             pdb.createHistoryTable();
 
+            CsvData data = new CsvData(this);
             CommandManager commandManager = new CommandManager(this);
+            commandManager.register(new CmdUnBan(pdb, config, data));
             commandManager.register(new CmdBan(pdb, config));
+
+            getServer().getPluginManager().registerEvents(new JoinPlayerListener(pdb, config, data), this);
         } catch (Exception e) {
             getLogger().severe("Error activating the plugin: " + e.getMessage());
             e.printStackTrace();

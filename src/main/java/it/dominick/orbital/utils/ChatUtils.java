@@ -2,6 +2,7 @@ package it.dominick.orbital.utils;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -17,6 +18,10 @@ public class ChatUtils {
         player.sendMessage(translateHexColorCodes(message));
     }
 
+    public static void send(CommandSender player, FileConfiguration config, String str) {
+        player.sendMessage(translateHexColorCodes(config.getString(str)));
+    }
+
     public static void send(Player player, FileConfiguration config, String str) {
         player.sendMessage(translateHexColorCodes(config.getString(str)));
     }
@@ -30,6 +35,22 @@ public class ChatUtils {
             String placeholder = entry.getKey();
             String replacement = entry.getValue();
             message = message.replace(placeholder, replacement);
+        }
+
+        player.sendMessage(translateHexColorCodes(message));
+    }
+
+    public static void send(CommandSender player, FileConfiguration config, String str, String... placeholders) {
+        String message = config.getString(str);
+
+        if (placeholders.length % 2 == 0) {
+            for (int i = 0; i < placeholders.length; i += 2) {
+                String placeholder = placeholders[i];
+                String replacement = placeholders[i + 1];
+                message = message.replace(placeholder, replacement);
+            }
+        } else {
+            return;
         }
 
         player.sendMessage(translateHexColorCodes(message));

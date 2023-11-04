@@ -1,0 +1,6 @@
+name: PunishmentOrbital
+version: '${version}'
+main: it.dominick.orbital.PunishmentOrbital
+api-version: '1.13'
+authors: [ Dominick12 ]
+description: A trial Orbital Studios Plugin

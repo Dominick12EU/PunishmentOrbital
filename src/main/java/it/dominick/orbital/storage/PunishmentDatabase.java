@@ -220,6 +220,75 @@ public class PunishmentDatabase {
 
     //MUTE
 
+    public void mutePlayer(UUID playerUUID, String playerName, String reason, Timestamp expiration) {
+        executorService.execute(() -> {
+            try (Connection connection = dataSource.getConnection();
+                 PreparedStatement statement = connection.prepareStatement("INSERT INTO mute (player_uuid, player_name, reason, expiration) VALUES (?, ?, ?, ?)")) {
+                statement.setString(1, playerUUID.toString());
+                statement.setString(2, playerName);
+                statement.setString(3, reason);
+                statement.setTimestamp(4, expiration);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println("Error while muting player: " + e.getMessage());
+            }
+        });
+    }
+
+    public void unmutePlayer(UUID playerUUID) {
+        executorService.execute(() -> {
+            try (Connection connection = dataSource.getConnection();
+                 PreparedStatement statement = connection.prepareStatement("DELETE FROM mute WHERE player_uuid = ?")) {
+                statement.setString(1, playerUUID.toString());
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println("Error unmuting player: " + e.getMessage());
+            }
+        });
+    }
+
+    public boolean isMuted(UUID playerUUID) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM mute WHERE player_uuid = ?")) {
+            statement.setString(1, playerUUID.toString());
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            System.out.println("Error checking mute: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public Timestamp getMuteExpiration(UUID playerUUID) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT expiration FROM mute WHERE player_uuid = ?")) {
+            statement.setString(1, playerUUID.toString());
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getTimestamp("expiration");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving mute expiration: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public String getMuteReason(UUID playerUUID) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT reason FROM mute WHERE player_uuid = ?")) {
+            statement.setString(1, playerUUID.toString());
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("reason");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving mute reason: " + e.getMessage());
+        }
+        return null;
+    }
+
     //GENERAL
 
     public void addToHistory(UUID playerUUID, String playerName, String reason, Timestamp expiration, String staffName, String staffAction) {

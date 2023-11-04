@@ -9,12 +9,16 @@ messages:
   playerAlreadyBlacklisted: "&cPlayer &7{player}&c is already blacklisted"
   playerNotOnline: "&cPlayer &7{player}&c is not online"
   playerNotBanned: "&cPlayer &7{player}&c is not banned"
+  playerNotMuted: "&cPlayer &7{player}&c is not muted"
   playerNotBlacklisted: "&cPlayer &7{player}&c is not blacklisted"
   playerUnBlacklist: "&aPlayer &7{player}&a it was unblacklisted"
-  playerUnbanned: "&aPlayer &7{player}&a it was unbanned"
+  playerUnBanned: "&aPlayer &7{player}&a it was unbanned"
+  playerUnMuted: "&aPlayer &7{player}&a it was unmuted"
+  muteResponse: "&dYou have been mutated for &7{reason} &d(&7{duration}&d)"
 
   confirmedBlacklist: "&aPlayer blacklisted successfully"
   confirmedBan: "&aPlayer banned successfully"
+  confirmedMute: "&aPlayer muted successfully"
   banDisplay:
     - "&d&lOrbital&5&lStudios"
     - ""

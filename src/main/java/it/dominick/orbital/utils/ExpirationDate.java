@@ -2,6 +2,7 @@ package it.dominick.orbital.utils;
 
 import java.sql.Timestamp;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 public class ExpirationDate {
@@ -43,5 +44,33 @@ public class ExpirationDate {
 
         LocalDateTime expirationDateTime = LocalDateTime.now().plus(Duration.ofMillis(durationMillis));
         return Timestamp.valueOf(expirationDateTime);
+    }
+
+    public static String getTimeUntilNow(long timestampMillis) {
+        Instant now = Instant.now();
+        Instant expiration = Instant.ofEpochMilli(timestampMillis);
+
+        Duration duration = Duration.between(now, expiration);
+        long seconds = duration.getSeconds();
+
+        if (seconds < 60) {
+            return seconds + "s";
+        } else {
+            long minutes = seconds / 60;
+            long remainingSeconds = seconds % 60;
+
+            if (minutes < 60) {
+                return minutes + "m " + remainingSeconds + "s";
+            } else {
+                long hours = minutes / 60;
+                long remainingMinutes = minutes % 60;
+
+                if (hours > 0) {
+                    return hours + "h " + remainingMinutes + "m";
+                } else {
+                    return remainingMinutes + "m";
+                }
+            }
+        }
     }
 }

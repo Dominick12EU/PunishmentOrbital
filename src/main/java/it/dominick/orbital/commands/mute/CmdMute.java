@@ -64,9 +64,9 @@ public class CmdMute extends CommandBase {
         }
 
         PunishEvent punishEvent = new PunishEvent(staffAction, reason, staffName, playerName, expiration);
-        Bukkit.getPluginManager().callEvent(punishEvent);
 
         if (!punishEvent.isCancelled()) {
+            Bukkit.getPluginManager().callEvent(punishEvent);
             pdb.mutePlayer(playerUUID, playerName, reason, expiration);
             pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
 

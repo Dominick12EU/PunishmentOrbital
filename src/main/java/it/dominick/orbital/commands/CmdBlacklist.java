@@ -82,9 +82,9 @@ public class CmdBlacklist extends CommandBase {
         Timestamp expiration = Timestamp.valueOf(now);
 
         PunishEvent punishEvent = new PunishEvent(staffAction, reason, staffName, playerName, expiration);
-        Bukkit.getPluginManager().callEvent(punishEvent);
 
         if (!punishEvent.isCancelled()) {
+            Bukkit.getPluginManager().callEvent(punishEvent);
             pdb.removeFromBlacklist(playerUUID);
             pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
 

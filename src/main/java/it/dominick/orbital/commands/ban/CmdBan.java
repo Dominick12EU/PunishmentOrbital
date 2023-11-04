@@ -59,9 +59,9 @@ public class CmdBan extends CommandBase {
         UUID playerUUID = player.getUniqueId();
 
         PunishEvent punishEvent = new PunishEvent(staffAction, reason, staffName, playerName, expiration);
-        Bukkit.getPluginManager().callEvent(punishEvent);
 
         if (!punishEvent.isCancelled()) {
+            Bukkit.getPluginManager().callEvent(punishEvent);
             pdb.banPlayer(playerUUID, playerName, reason, expiration);
             pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
 

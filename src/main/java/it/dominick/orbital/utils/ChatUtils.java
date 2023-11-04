@@ -15,30 +15,8 @@ public class ChatUtils {
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
 
-    public static void send(Player player, String message) {
-        player.sendMessage(translateHexColorCodes(message));
-    }
-
     public static void send(CommandSender player, FileConfiguration config, String str) {
         player.sendMessage(translateHexColorCodes(config.getString(str)));
-    }
-
-    public static void send(Player player, FileConfiguration config, String str) {
-        player.sendMessage(translateHexColorCodes(config.getString(str)));
-    }
-
-    public static void send(Player player, String message, Map<String, String> placeholders) {
-        if (message == null || message.isEmpty()) {
-            return;
-        }
-
-        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-            String placeholder = entry.getKey();
-            String replacement = entry.getValue();
-            message = message.replace(placeholder, replacement);
-        }
-
-        player.sendMessage(translateHexColorCodes(message));
     }
 
     public static void alert(CommandSender player, List<String> messages, String... placeholders) {

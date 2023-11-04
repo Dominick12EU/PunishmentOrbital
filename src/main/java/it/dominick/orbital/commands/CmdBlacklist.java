@@ -1,5 +1,6 @@
 package it.dominick.orbital.commands;
 
+import it.dominick.orbital.api.PunishEvent;
 import it.dominick.orbital.storage.CsvData;
 import it.dominick.orbital.storage.PunishmentDatabase;
 import it.dominick.orbital.utils.ChatUtils;
@@ -16,6 +17,7 @@ import org.bukkit.entity.Player;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Command("blacklist")
@@ -55,6 +57,10 @@ public class CmdBlacklist extends CommandBase {
         pdb.blacklistPlayer(playerUUID, playerName, reason);
         pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, "BLACKLIST");
 
+        List<String> blacklistDisplay = config.getStringList("messages.blacklistDisplay");
+        player.kickPlayer(ChatUtils.translateHexColorCodes(String.join("\n", blacklistDisplay)
+                .replace("{reason}", pdb.getBlacklistReason(playerUUID))));
+
         ChatUtils.send(sender, config, "messages.confirmedBlacklist");
     }
 
@@ -64,6 +70,7 @@ public class CmdBlacklist extends CommandBase {
         String playerName = args[1];
         UUID playerUUID = UUID.fromString(data.getPlayerUUID(playerName));
         String staffName = sender.getName();
+        String staffAction = "UNBLACKLIST";
 
         if (!pdb.isBlacklisted(playerUUID)) {
             ChatUtils.send(sender, config, "messages.playerNotBlacklisted", "{player}", playerName);
@@ -74,9 +81,14 @@ public class CmdBlacklist extends CommandBase {
         LocalDateTime now = LocalDateTime.now();
         Timestamp expiration = Timestamp.valueOf(now);
 
-        pdb.removeFromBlacklist(playerUUID);
-        pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, "UNBLACKLIST");
+        PunishEvent punishEvent = new PunishEvent(staffAction, reason, staffName, playerName, expiration);
+        Bukkit.getPluginManager().callEvent(punishEvent);
 
-        ChatUtils.send(sender, config, "messages.playerUnBlacklist", "{player}", playerName);
+        if (!punishEvent.isCancelled()) {
+            pdb.removeFromBlacklist(playerUUID);
+            pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
+
+            ChatUtils.send(sender, config, "messages.playerUnBlacklist", "{player}", playerName);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package it.dominick.orbital.commands.mute;
 
+import it.dominick.orbital.api.PunishEvent;
 import it.dominick.orbital.storage.PunishmentDatabase;
 import it.dominick.orbital.utils.ChatUtils;
 import it.dominick.orbital.utils.ExpirationDate;
@@ -57,9 +58,19 @@ public class CmdMute extends CommandBase {
         Timestamp expiration = ExpirationDate.calculateExpirationDate(duration);
         UUID playerUUID = player.getUniqueId();
 
-        pdb.mutePlayer(playerUUID, playerName, reason, expiration);
-        pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
+        if (pdb.isMuted(playerUUID)) {
+            ChatUtils.send(sender, config, "messages.playerAlreadyMuted");
+            return;
+        }
 
-        ChatUtils.send(sender, config, "messages.confirmedMute");
+        PunishEvent punishEvent = new PunishEvent(staffAction, reason, staffName, playerName, expiration);
+        Bukkit.getPluginManager().callEvent(punishEvent);
+
+        if (!punishEvent.isCancelled()) {
+            pdb.mutePlayer(playerUUID, playerName, reason, expiration);
+            pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
+
+            ChatUtils.send(sender, config, "messages.confirmedMute");
+        }
     }
 }

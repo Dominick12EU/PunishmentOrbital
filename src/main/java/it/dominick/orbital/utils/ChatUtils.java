@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +39,23 @@ public class ChatUtils {
         }
 
         player.sendMessage(translateHexColorCodes(message));
+    }
+
+    public static void alert(CommandSender player, List<String> messages, String... placeholders) {
+        if (placeholders.length % 2 == 0) {
+            for (int i = 0; i < placeholders.length; i += 2) {
+                String placeholder = placeholders[i];
+                String replacement = placeholders[i + 1];
+
+                for (int j = 0; j < messages.size(); j++) {
+                    messages.set(j, messages.get(j).replace(placeholder, replacement));
+                }
+            }
+        } else {
+            return;
+        }
+
+        player.sendMessage(translateHexColorCodes(String.join("\n", messages)));
     }
 
     public static void send(CommandSender player, FileConfiguration config, String str, String... placeholders) {

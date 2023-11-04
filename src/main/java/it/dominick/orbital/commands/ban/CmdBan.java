@@ -1,5 +1,6 @@
 package it.dominick.orbital.commands.ban;
 
+import it.dominick.orbital.api.PunishEvent;
 import it.dominick.orbital.storage.PunishmentDatabase;
 import it.dominick.orbital.utils.ChatUtils;
 import it.dominick.orbital.utils.ExpirationDate;
@@ -57,13 +58,18 @@ public class CmdBan extends CommandBase {
         Timestamp expiration = ExpirationDate.calculateExpirationDate(duration);
         UUID playerUUID = player.getUniqueId();
 
-        pdb.banPlayer(playerUUID, playerName, reason, expiration);
-        pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
+        PunishEvent punishEvent = new PunishEvent(staffAction, reason, staffName, playerName, expiration);
+        Bukkit.getPluginManager().callEvent(punishEvent);
 
-        List<String> banDisplay = config.getStringList("messages.banDisplay");
-        player.kickPlayer(ChatUtils.translateHexColorCodes(String.join("\n", banDisplay)
-                .replace("{expiration}", expiration.toString()))
-                .replace("{reason}", reason));
-        ChatUtils.send(sender, config, "messages.confirmedBan");
+        if (!punishEvent.isCancelled()) {
+            pdb.banPlayer(playerUUID, playerName, reason, expiration);
+            pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
+
+            List<String> banDisplay = config.getStringList("messages.banDisplay");
+            player.kickPlayer(ChatUtils.translateHexColorCodes(String.join("\n", banDisplay)
+                            .replace("{expiration}", expiration.toString()))
+                    .replace("{reason}", reason));
+            ChatUtils.send(sender, config, "messages.confirmedBan");
+        }
     }
 }

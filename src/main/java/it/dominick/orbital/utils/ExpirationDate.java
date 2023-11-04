@@ -65,10 +65,17 @@ public class ExpirationDate {
                 long hours = minutes / 60;
                 long remainingMinutes = minutes % 60;
 
-                if (hours > 0) {
+                if (hours < 24) {
                     return hours + "h " + remainingMinutes + "m";
                 } else {
-                    return remainingMinutes + "m";
+                    long days = hours / 24;
+                    long remainingHours = hours % 24;
+
+                    if (days < 1000) {
+                        return days + "d " + remainingHours + "h";
+                    } else {
+                        return "Permanent";
+                    }
                 }
             }
         }

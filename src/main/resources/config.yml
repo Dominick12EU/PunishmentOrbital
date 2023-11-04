@@ -7,6 +7,7 @@ database:
 
 messages:
   playerAlreadyBlacklisted: "&cPlayer &7{player}&c is already blacklisted"
+  playerAlreadyMuted: "&cPlayer &7{player}&c is already muted"
   playerNotOnline: "&cPlayer &7{player}&c is not online"
   playerNotBanned: "&cPlayer &7{player}&c is not banned"
   playerNotMuted: "&cPlayer &7{player}&c is not muted"
@@ -15,10 +16,25 @@ messages:
   playerUnBanned: "&aPlayer &7{player}&a it was unbanned"
   playerUnMuted: "&aPlayer &7{player}&a it was unmuted"
   muteResponse: "&dYou have been mutated for &7{reason} &d(&7{duration}&d)"
-
   confirmedBlacklist: "&aPlayer blacklisted successfully"
   confirmedBan: "&aPlayer banned successfully"
   confirmedMute: "&aPlayer muted successfully"
+  punishNotify:
+    - " &5&m-------------------------------"
+    - "&5  ● &dAction: &f{action}"
+    - "&5  ● &dAction By: &f{staffer}"
+    - "&5  ● &dSuffered by: &f{player}"
+    - "&5  ● &dReason: &f{reason}"
+    - "&5  ● &dDuration: &f{duration}"
+    - " &5&m-------------------------------"
+  unPunishNotify:
+    - " &5&m-------------------------------"
+    - "&5  ● &dAction: &f{action}"
+    - "&5  ● &dAction By: &f{staffer}"
+    - "&5  ● &dSuffered by: &f{player}"
+    - "&5  ● &dReason: &f{reason}"
+    - " &5&m-------------------------------"
+
   banDisplay:
     - "&d&lOrbital&5&lStudios"
     - ""

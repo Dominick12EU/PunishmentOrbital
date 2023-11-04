@@ -1,5 +1,6 @@
 package it.dominick.orbital.commands;
 
+import it.dominick.orbital.api.PunishEvent;
 import it.dominick.orbital.storage.PunishmentDatabase;
 import it.dominick.orbital.utils.ChatUtils;
 import me.mattstudios.mf.annotations.Alias;
@@ -47,8 +48,13 @@ public class CmdKick extends CommandBase {
         String staffAction = "KICK";
         UUID playerUUID = player.getUniqueId();
 
-        List<String> kickDisplay = config.getStringList("messages.kickDisplay");
-        pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
-        player.kickPlayer(ChatUtils.translateHexColorCodes(String.join("\n", kickDisplay).replace("{reason}", reason)));
+        PunishEvent punishEvent = new PunishEvent(staffAction, reason, staffName, playerName, expiration);
+        Bukkit.getPluginManager().callEvent(punishEvent);
+
+        if (!punishEvent.isCancelled()) {
+            List<String> kickDisplay = config.getStringList("messages.kickDisplay");
+            pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
+            player.kickPlayer(ChatUtils.translateHexColorCodes(String.join("\n", kickDisplay).replace("{reason}", reason)));
+        }
     }
 }

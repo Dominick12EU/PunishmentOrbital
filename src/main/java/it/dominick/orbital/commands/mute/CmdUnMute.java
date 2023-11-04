@@ -1,5 +1,6 @@
 package it.dominick.orbital.commands.mute;
 
+import it.dominick.orbital.api.PunishEvent;
 import it.dominick.orbital.storage.CsvData;
 import it.dominick.orbital.storage.PunishmentDatabase;
 import it.dominick.orbital.utils.ChatUtils;
@@ -7,6 +8,7 @@ import me.mattstudios.mf.annotations.Command;
 import me.mattstudios.mf.annotations.Default;
 import me.mattstudios.mf.annotations.Permission;
 import me.mattstudios.mf.base.CommandBase;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -42,9 +44,14 @@ public class CmdUnMute extends CommandBase {
         LocalDateTime now = LocalDateTime.now();
         Timestamp expiration = Timestamp.valueOf(now);
 
-        pdb.unmutePlayer(playerUUID);
-        pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
+        PunishEvent punishEvent = new PunishEvent(staffAction, reason, staffName, playerName, expiration);
+        Bukkit.getPluginManager().callEvent(punishEvent);
 
-        ChatUtils.send(sender, config, "messages.playerUnMuted", "{player}", playerName);
+        if (!punishEvent.isCancelled()) {
+            pdb.unmutePlayer(playerUUID);
+            pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
+
+            ChatUtils.send(sender, config, "messages.playerUnMuted", "{player}", playerName);
+        }
     }
 }

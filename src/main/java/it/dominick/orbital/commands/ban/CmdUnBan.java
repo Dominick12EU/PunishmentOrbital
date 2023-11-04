@@ -1,5 +1,6 @@
 package it.dominick.orbital.commands.ban;
 
+import it.dominick.orbital.api.PunishEvent;
 import it.dominick.orbital.storage.CsvData;
 import it.dominick.orbital.storage.PunishmentDatabase;
 import it.dominick.orbital.utils.ChatUtils;
@@ -44,9 +45,14 @@ public class CmdUnBan extends CommandBase {
         LocalDateTime now = LocalDateTime.now();
         Timestamp expiration = Timestamp.valueOf(now);
 
-        pdb.unbanPlayer(playerUUID);
-        pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
+        PunishEvent punishEvent = new PunishEvent(staffAction, reason, staffName, playerName, expiration);
+        Bukkit.getPluginManager().callEvent(punishEvent);
 
-        ChatUtils.send(sender, config, "messages.playerUnBanned", "{player}", playerName);
+        if (!punishEvent.isCancelled()) {
+            pdb.unbanPlayer(playerUUID);
+            pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
+
+            ChatUtils.send(sender, config, "messages.playerUnBanned", "{player}", playerName);
+        }
     }
 }

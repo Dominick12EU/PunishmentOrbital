@@ -1,6 +1,10 @@
 package it.dominick.orbital;
 
 import it.dominick.orbital.commands.*;
+import it.dominick.orbital.commands.ban.CmdBan;
+import it.dominick.orbital.commands.ban.CmdUnBan;
+import it.dominick.orbital.commands.mute.CmdMute;
+import it.dominick.orbital.commands.mute.CmdUnMute;
 import it.dominick.orbital.events.ChatListener;
 import it.dominick.orbital.events.JoinPlayerListener;
 import it.dominick.orbital.storage.CsvData;
@@ -37,9 +41,11 @@ public final class PunishmentOrbital extends JavaPlugin {
             CommandManager commandManager = new CommandManager(this);
             commandManager.register(new CmdUnBan(pdb, config, data));
             commandManager.register(new CmdUnMute(pdb, config, data));
+            commandManager.register(new CmdKick(pdb, config));
             commandManager.register(new CmdBan(pdb, config));
             commandManager.register(new CmdBlacklist(pdb, config, data));
             commandManager.register(new CmdMute(pdb, config));
+            commandManager.register(new CmdHistory(pdb, config, data));
 
             getServer().getPluginManager().registerEvents(new JoinPlayerListener(pdb, config, data), this);
             getServer().getPluginManager().registerEvents(new ChatListener(pdb, config), this);

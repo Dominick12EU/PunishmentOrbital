@@ -1,4 +1,4 @@
-package it.dominick.orbital.commands;
+package it.dominick.orbital.commands.ban;
 
 import it.dominick.orbital.storage.PunishmentDatabase;
 import it.dominick.orbital.utils.ChatUtils;
@@ -18,21 +18,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-@Command("tempmute")
-@Alias("mute")
-public class CmdMute extends CommandBase {
+@Command("tempban")
+@Alias("ban")
+public class CmdBan extends CommandBase {
 
     private PunishmentDatabase pdb;
     private FileConfiguration config;
 
-    public CmdMute(PunishmentDatabase pdb, FileConfiguration config) {
+    public CmdBan(PunishmentDatabase pdb, FileConfiguration config) {
         this.pdb = pdb;
         this.config = config;
     }
 
     @Default
-    @Permission("punishmentorbital.mute")
-    public void muteCommand(CommandSender sender, String[] args) {
+    @Permission("punishmentorbital.ban")
+    public void banCommand(CommandSender sender, String[] args) {
         String playerName = args[0];
         Player player = Bukkit.getPlayer(playerName);
         String staffName = sender.getName();
@@ -44,22 +44,26 @@ public class CmdMute extends CommandBase {
 
         String duration = args.length >= 2 ? args[1] : "permanent";
         String reason = args.length >= 3 ? String.join(" ", Arrays.copyOfRange(args, 2, args.length)) : "No Reason";
-        String staffAction = "MUTE";
+        String staffAction = "BAN";
 
         if (!duration.equalsIgnoreCase("permanent") && !duration.matches("\\d+[smhdw]")) {
             reason = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
             duration = "permanent";
         } else if (args.length >= 3) {
             reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-            staffAction = "TEMPMUTE";
+            staffAction = "TEMPBAN";
         }
 
         Timestamp expiration = ExpirationDate.calculateExpirationDate(duration);
         UUID playerUUID = player.getUniqueId();
 
-        pdb.mutePlayer(playerUUID, playerName, reason, expiration);
+        pdb.banPlayer(playerUUID, playerName, reason, expiration);
         pdb.addToHistory(playerUUID, playerName, reason, expiration, staffName, staffAction);
 
-        ChatUtils.send(sender, config, "messages.confirmedMute");
+        List<String> banDisplay = config.getStringList("messages.banDisplay");
+        player.kickPlayer(ChatUtils.translateHexColorCodes(String.join("\n", banDisplay)
+                .replace("{expiration}", expiration.toString()))
+                .replace("{reason}", reason));
+        ChatUtils.send(sender, config, "messages.confirmedBan");
     }
 }

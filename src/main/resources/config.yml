@@ -30,3 +30,26 @@ messages:
     - ""
     - "&dYou have been &lBLACKLISTED"
     - "&dReason: &7{reason}"
+  kickDisplay:
+    - "&d&lOrbital&5&lStudios"
+    - ""
+    - "&dYou have been &lKicked"
+    - "&dReason: &7{reason}"
+
+gui:
+  title: "§dPunish History"
+  titleBook: "&dPunish"
+  punishMaterial: BOOK
+  materialPage: ARROW
+  materialFill: GRAY_STAINED_GLASS_PANE
+  nextPage: "&aNext Page"
+  previousPage: "&cPrevious Page"
+  punishLore:
+    - ""
+    - " &5● &dSuspected: &f{player}"
+    - " &5● &dBanned by: &f{staffer}"
+    - " &5● &dReason: &f{reason}"
+    - ""
+    - " &5● &dType: &7{action}"
+    - " &5● &dBanned the: &7{banDate}"
+    - " &5● &dExpires: &7{expiration}"

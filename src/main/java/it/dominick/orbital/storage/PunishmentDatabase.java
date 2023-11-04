@@ -2,8 +2,11 @@ package it.dominick.orbital.storage;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import it.dominick.orbital.data.PunishData;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -306,6 +309,32 @@ public class PunishmentDatabase {
                 System.out.println("Error while adding ban to history: " + e.getMessage());
             }
         });
+    }
+
+    public List<PunishData> getHistory(UUID playerUUID) {
+        List<PunishData> history = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM history WHERE player_uuid = ?")) {
+            statement.setString(1, playerUUID.toString());
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String playerName = resultSet.getString("player_name");
+                String reason = resultSet.getString("reason");
+                Timestamp startTime = resultSet.getTimestamp("punish_date");
+                Timestamp expiration = resultSet.getTimestamp("expiration");
+                String staffName = resultSet.getString("staff_name");
+                String staffAction = resultSet.getString("staff_action");
+
+                PunishData data = new PunishData(playerName, playerUUID, reason, startTime, expiration, staffName, staffAction);
+                history.add(data);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving ban history: " + e.getMessage());
+        }
+
+        return history;
     }
 
     public void connect() {

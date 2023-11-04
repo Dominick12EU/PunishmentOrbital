@@ -1,4 +1,4 @@
-package it.dominick.orbital.commands;
+package it.dominick.orbital.commands.ban;
 
 import it.dominick.orbital.storage.CsvData;
 import it.dominick.orbital.storage.PunishmentDatabase;

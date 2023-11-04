@@ -23,6 +23,7 @@ dependencies {
     compileOnly "org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT"
     implementation 'me.mattstudios.utils:matt-framework:1.4.4'
     implementation 'com.zaxxer:HikariCP:2.7.9'
+    implementation 'dev.triumphteam:triumph-gui:3.1.2'
 }
 
 def targetJavaVersion = 8

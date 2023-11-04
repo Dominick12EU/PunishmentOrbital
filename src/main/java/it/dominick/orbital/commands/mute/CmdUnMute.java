@@ -1,4 +1,4 @@
-package it.dominick.orbital.commands;
+package it.dominick.orbital.commands.mute;
 
 import it.dominick.orbital.storage.CsvData;
 import it.dominick.orbital.storage.PunishmentDatabase;
